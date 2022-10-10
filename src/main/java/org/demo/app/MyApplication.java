@@ -18,7 +18,7 @@ public class MyApplication {
 	@Autowired
 	private EmployeeRepository employeeRepository ;
 	
-    protected void run(String[] args) {
+    public void run(String[] args) {
     	System.out.println("Hello world!");
     	System.out.println("args.length = " + args.length);
     	helloService.hello("Bob");

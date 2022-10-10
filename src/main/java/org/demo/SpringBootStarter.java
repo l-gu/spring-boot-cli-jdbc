@@ -1,5 +1,6 @@
-package org.demo.app;
+package org.demo;
 
+import org.demo.app.MyApplication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -7,20 +8,10 @@ import org.springframework.context.annotation.ComponentScan;
 
 
 @SpringBootApplication
-@ComponentScan(basePackages = "org.demo") 
+//If this class is not at the top level of the packages hierarchy use @ComponentScan
+//@ComponentScan(basePackages = "org.demo") 
 public class SpringBootStarter {
 
-//    public static void main(String[] args) {
-//    	ConfigurableApplicationContext appContext =  SpringApplication.run(SpringBootStarter.class, args);
-//        SpringBootStarter app = appContext.getBean(SpringBootStarter.class);
-//        app.run(args);
-//    }
-//
-//    private void run(String[] args) {
-//    	System.out.println("Hello world!");
-//    	System.out.println("args.length = " + args.length);
-//    }
-    
     public static void main(String[] args) {
     	ConfigurableApplicationContext appContext =  SpringApplication.run(SpringBootStarter.class, args);
     	
