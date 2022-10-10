@@ -6,11 +6,15 @@ public interface EmployeeRepository {
 	
 	void createTable();
 	
-	int getCount();
+	long getCount();
 	
 	Employee findById(Long id);
 	
 	Employee findByIdWithParamMap(Long id) ;
 	
 	void insert(Employee record) ;
+	
+	int update(Employee record);
+
+	int deleteById(Long id);
 }

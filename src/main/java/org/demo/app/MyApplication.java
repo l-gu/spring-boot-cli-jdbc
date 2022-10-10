@@ -36,9 +36,14 @@ public class MyApplication {
     	emp.setFirstName("Sponge");
     	emp.setBirthDate( LocalDate.of(2020, 7, 14) );    	
     	employeeRepository.insert(emp);
+    	emp.setId(2L);
+    	emp.setFirstName("John");
+    	emp.setFirstName("Wayne");
+    	emp.setBirthDate( LocalDate.of(1936, 8, 27) );    	
+    	employeeRepository.insert(emp);
     	
     	System.out.println("SQL count...");
-    	int count = employeeRepository.getCount();
+    	long count = employeeRepository.getCount();
     	System.out.println("count = " + count);
     	
     	System.out.println("findById(1)...");
@@ -46,7 +51,13 @@ public class MyApplication {
        	System.out.println("employee = " + emp);
 
        	System.out.println("findById(123)...");
-    	emp = employeeRepository.findByIdWithParamMap(123L);
+    	emp = employeeRepository.findByIdWithParamMap(5L);
        	System.out.println("employee = " + emp);
+       	
+       	System.out.println("deleteById(1)...");
+       	int r = employeeRepository.deleteById(1L);
+       	System.out.println("r = " + r);
+       	
+       	System.out.println("count = " + employeeRepository.getCount());
     } 
 }
