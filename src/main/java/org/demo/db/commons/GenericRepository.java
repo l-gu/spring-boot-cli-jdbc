@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.demo.domain.model.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -18,7 +17,6 @@ public abstract class GenericRepository<T> {
 	@Autowired
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-	//protected abstract RowMapper<T> getRowMapper();
 	private final RowMapper<T> rowMapper ;
 	
 	/**
@@ -28,6 +26,9 @@ public abstract class GenericRepository<T> {
 	public GenericRepository(RowMapper<T> rowMapper) {
 		super();
 		this.rowMapper = rowMapper;
+		if ( rowMapper == null ) {
+		    throw new IllegalArgumentException ("RowMapper is null");
+		}
 	}
 	//----------------------------------------------------------------------------
 	
