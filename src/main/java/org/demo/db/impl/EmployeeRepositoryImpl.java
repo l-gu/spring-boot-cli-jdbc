@@ -80,7 +80,7 @@ public class EmployeeRepositoryImpl extends GenericRepository<Employee> implemen
 	}
 
 	@Override
-	public long getCount() {
+	public long countAll() {
 		String sql = "select count(1) from EMPLOYEE";
 		//return namedParameterJdbcTemplate.getJdbcTemplate().queryForObject(sql, Long.class);
 		//return namedParameterJdbcTemplate.queryForObject(sql, getEmptySqlParameterSource(), Long.class);
@@ -114,6 +114,7 @@ public class EmployeeRepositoryImpl extends GenericRepository<Employee> implemen
 		return sqlSelectOne(sql, getPKParameters(id));
 	}
 
+	@Override
 	public List<Employee> findAll() {
 		// SQL request used by jdbcTemplate to create a prepared statement (with named parameter)
 		String sql = "SELECT * FROM EMPLOYEE ";
