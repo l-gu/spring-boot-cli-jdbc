@@ -1,6 +1,7 @@
 package org.demo.app;
 
 import org.demo.db.EmployeeRepository;
+import org.demo.domain.model.Employee;
 import org.demo.services.BonjourService;
 import org.demo.services.HelloService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +32,14 @@ public class MyApplication {
     	int count = employeeRepository.getCount();
     	System.out.println("count = " + count);
     	
+    	Employee emp;
+    	
+    	System.out.println("findById(123)...");
+    	emp = employeeRepository.findById(123L);
+       	System.out.println("employee = " + emp);
+
+       	System.out.println("findById(123)...");
+    	emp = employeeRepository.findByIdWithParamMap(123L);
+       	System.out.println("employee = " + emp);
     } 
 }

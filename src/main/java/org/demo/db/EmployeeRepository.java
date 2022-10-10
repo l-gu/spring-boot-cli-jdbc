@@ -10,4 +10,6 @@ public interface EmployeeRepository {
 	
 	Employee findById(Long id);
 	
+	Employee findByIdWithParamMap(Long id) ;
+	
 }
