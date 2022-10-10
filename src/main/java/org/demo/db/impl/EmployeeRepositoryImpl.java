@@ -2,55 +2,17 @@ package org.demo.db.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.List;
-
-import javax.sql.DataSource;
 
 import org.demo.db.EmployeeRepository;
+import org.demo.db.commons.GenericRepository;
 import org.demo.domain.model.Employee;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class EmployeeRepositoryImpl implements EmployeeRepository {
-
-	protected DataSource getDataSource() { // TODO : move in generic class
-		// each JdbcTemplate holds a DataSource
-		// return namedParameterJdbcTemplate.getDataSource();
-		return namedParameterJdbcTemplate.getJdbcTemplate().getDataSource();
-	}
-
-	protected LocalDate toLocalDate(java.sql.Date sqlDate) { // TODO : move in generic class
-		if ( sqlDate != null ) {
-			return sqlDate.toLocalDate();
-		}
-		return null ;
-	}
-
-	protected <T> T uniqueRecordOrNull (List<T> list) { // TODO : move in generic class
-		if (list.isEmpty()) {
-		    // list is empty => not found 
-		    return null; 
-		} else if (list.size() == 1) { 
-			// list contains exactly 1 element => found
-		    return list.get(0); 
-		} else { 
-			// list contains more than 1 element
-		    throw new IllegalStateException("More than one record found (only one expected)");
-		}		
-	}
-
-	private static final SqlParameterSource emptySqlParameterSource = new MapSqlParameterSource();
-	protected SqlParameterSource getEmptySqlParameterSource() {
-		return emptySqlParameterSource;
-	}
-	
-	//------------------------------------------------------------------------------
+public class EmployeeRepositoryImpl extends GenericRepository<Employee> implements EmployeeRepository {
 
 //	private JdbcTemplate jdbcTemplate;
 //
@@ -62,8 +24,8 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 //	@Autowired
 //	private JdbcTemplate jdbcTemplate; // with a single datasource can be autowired directly
 	
-	@Autowired
-	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+//	@Autowired
+//	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	private final class EmployeeRowMapper implements RowMapper<Employee> {
 		@Override
@@ -78,6 +40,12 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 	}
 	private final EmployeeRowMapper employeeRowMapper = new EmployeeRowMapper();
 	// private final RowMapper<Employee> rowMapper = new BeanPropertyRowMapper<>();
+
+	@Override
+	protected RowMapper<Employee> getRowMapper() {
+		return employeeRowMapper;
+	}
+	
 
 	/**
 	 * Returns all SQL parameters for the given object
@@ -114,14 +82,16 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 				+ " birth_date date"
 				+ ")";
 		// jdbcTemplate.execute(sql);
-		namedParameterJdbcTemplate.getJdbcTemplate().execute(sql);
+		//namedParameterJdbcTemplate.getJdbcTemplate().execute(sql);
+		getJdbcTemplate().execute(sql);
 	}
 
 	@Override
 	public long getCount() {
 		String sql = "select count(1) from EMPLOYEE";
 		//return namedParameterJdbcTemplate.getJdbcTemplate().queryForObject(sql, Long.class);
-		return namedParameterJdbcTemplate.queryForObject(sql, getEmptySqlParameterSource(), Long.class);
+		//return namedParameterJdbcTemplate.queryForObject(sql, getEmptySqlParameterSource(), Long.class);
+		return sqlCount(sql);
 	}
 
 	@Override
@@ -137,7 +107,7 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 
 		// Execute SQL query, return a list of Employee objects created with "row mapper"
 		// get unique record in the list returned
-		return uniqueRecordOrNull(namedParameterJdbcTemplate.getJdbcTemplate().query(sql, employeeRowMapper, id));
+		return uniqueOrNull(getJdbcTemplate().query(sql, employeeRowMapper, id));
 	}
 
 	@Override
@@ -145,13 +115,10 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 		// SQL request used by jdbcTemplate to create a prepared statement (with named parameter)
 		String sql = "SELECT * FROM EMPLOYEE WHERE ID = :id";
 		
-//		// Map of query parameters
-//		Map<String,Object> parameters = new HashMap<>();
-//		parameters.put("id", id);
-
 		// Execute SQL query, return a list of Employee objects created with "row mapper"
 		// get unique record in the list returned
-		return uniqueRecordOrNull(namedParameterJdbcTemplate.query(sql, getPKParameters(id), employeeRowMapper));
+		//return uniqueOrNull(namedParameterJdbcTemplate.query(sql, getPKParameters(id), employeeRowMapper));
+		return sqlSelectByPK(sql, getPKParameters(id));
 	}
 
 	@Override
@@ -159,7 +126,8 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 		// SQL request used by jdbcTemplate to create a prepared statement (with named parameter)
 		String sql = "insert into employee  (id, first_name, last_name, birth_date) " 
 				+ " values (:id, :firstName, :lastName, :birthDate)";
-		namedParameterJdbcTemplate.update(sql, getAllParameters(record));
+		//namedParameterJdbcTemplate.update(sql, getAllParameters(record));
+		sqlInsert(sql, getAllParameters(record));
 	}
 
 	@Override
@@ -168,12 +136,15 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 		String sql = "update employee set " +
 				" firstName = :firstName, lastName = :latsName, birthDate = :birthDate " +
 				" where id = :id " ; 
-		return namedParameterJdbcTemplate.update(sql, getAllParameters(record));
+		//return namedParameterJdbcTemplate.update(sql, getAllParameters(record));
+		return sqlUpdate(sql, getAllParameters(record));
 	}
 	
 	@Override
 	public int deleteById(Long id) {
 		String sql = "delete from employee where id = :id";
-		return namedParameterJdbcTemplate.update(sql, getPKParameters(id));
+		//return namedParameterJdbcTemplate.update(sql, getPKParameters(id));
+		return sqlDelete(sql, getPKParameters(id));
 	}
+
 }
