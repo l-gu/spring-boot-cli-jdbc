@@ -3,6 +3,9 @@ package org.demo.db.commons;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.sql.DataSource;
+
+import org.demo.domain.model.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -12,25 +15,46 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
 public abstract class GenericRepository<T> {
 
-	private static final SqlParameterSource emptySqlParameterSource = new MapSqlParameterSource();
+	@Autowired
+	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-	protected SqlParameterSource getEmptySqlParameterSource() {
-		return emptySqlParameterSource;
+	//protected abstract RowMapper<T> getRowMapper();
+	private final RowMapper<T> rowMapper ;
+	
+	/**
+	 * Constructor
+	 * @param rowMapper
+	 */
+	public GenericRepository(RowMapper<T> rowMapper) {
+		super();
+		this.rowMapper = rowMapper;
+	}
+	//----------------------------------------------------------------------------
+	
+	protected NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
+		return namedParameterJdbcTemplate;
+	}
+
+	protected JdbcTemplate getJdbcTemplate() {
+		return namedParameterJdbcTemplate.getJdbcTemplate();
+	}
+
+	protected DataSource getDataSource() { 
+		// each JdbcTemplate holds a DataSource
+		// return namedParameterJdbcTemplate.getDataSource();
+		return namedParameterJdbcTemplate.getJdbcTemplate().getDataSource();
 	}
 	
-//	protected DataSource getDataSource() { 
-//		// each JdbcTemplate holds a DataSource
-//		// return namedParameterJdbcTemplate.getDataSource();
-//		return namedParameterJdbcTemplate.getJdbcTemplate().getDataSource();
-//	}
-
-	protected LocalDate toLocalDate(java.sql.Date sqlDate) { 
-		if ( sqlDate != null ) {
-			return sqlDate.toLocalDate();
-		}
-		return null ;
+	protected RowMapper<T> getRowMapper() {
+		return this.rowMapper;
 	}
 
+	//----------------------------------------------------------------------------
+	
+	protected SqlParameterSource getEmptySqlParameterSource() {
+		return new MapSqlParameterSource();
+	}
+	
 	protected T uniqueOrNull (List<T> list) { 
 		if (list.isEmpty()) {
 		    // list is empty => not found 
@@ -44,21 +68,28 @@ public abstract class GenericRepository<T> {
 		}		
 	}
 
-	@Autowired
-	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+	//----------------------------------------------------------------------------
 
-	protected abstract RowMapper<T> getRowMapper();
-
-	protected NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
-		return namedParameterJdbcTemplate;
+	protected static LocalDate toLocalDate(java.sql.Date sqlDate) { 
+		if ( sqlDate != null ) {
+			return sqlDate.toLocalDate();
+		}
+		return null ;
 	}
 
-	protected JdbcTemplate getJdbcTemplate() {
-		return namedParameterJdbcTemplate.getJdbcTemplate();
-	}
+	//----------------------------------------------------------------------------
 	
-	protected T sqlSelectByPK(String sql, SqlParameterSource sqlParameterSource) {
-		return uniqueOrNull(namedParameterJdbcTemplate.query(sql, sqlParameterSource, getRowMapper() ));
+	protected List<T> sqlSelectList(String sql) {
+		return namedParameterJdbcTemplate.query(sql, getRowMapper() );
+	}
+
+	protected List<T> sqlSelectList(String sql, SqlParameterSource sqlParameterSource) {
+		return namedParameterJdbcTemplate.query(sql, sqlParameterSource, getRowMapper() );
+	}
+
+
+	protected T sqlSelectOne(String sql, SqlParameterSource sqlParameterSource) {
+		return uniqueOrNull( sqlSelectList(sql, sqlParameterSource) );
 	}
 	
 	protected long sqlCount(String sql) {
@@ -75,6 +106,10 @@ public abstract class GenericRepository<T> {
 	
 	protected int sqlDelete(String sql, SqlParameterSource sqlParameterSource) {
 		return namedParameterJdbcTemplate.update(sql, sqlParameterSource);
+	}
+
+	protected void sqlExecute(String sql) {
+		namedParameterJdbcTemplate.getJdbcTemplate().execute(sql);
 	}
 
 }

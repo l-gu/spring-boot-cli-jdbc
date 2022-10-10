@@ -2,6 +2,7 @@ package org.demo.db.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.demo.db.EmployeeRepository;
 import org.demo.db.commons.GenericRepository;
@@ -14,20 +15,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class EmployeeRepositoryImpl extends GenericRepository<Employee> implements EmployeeRepository {
 
-//	private JdbcTemplate jdbcTemplate;
-//
-//	@Autowired
-//	public void setDataSource(DataSource dataSource) {
-//		this.jdbcTemplate = new JdbcTemplate(dataSource);
-//	}
-
-//	@Autowired
-//	private JdbcTemplate jdbcTemplate; // with a single datasource can be autowired directly
-	
-//	@Autowired
-//	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-	private final class EmployeeRowMapper implements RowMapper<Employee> {
+	private static final class EmployeeRowMapper implements RowMapper<Employee> {
 		@Override
 		public Employee mapRow(ResultSet rs, int rowNum) throws SQLException {
 			Employee e = new Employee();
@@ -38,14 +26,20 @@ public class EmployeeRepositoryImpl extends GenericRepository<Employee> implemen
 			return e;
 		}
 	}
-	private final EmployeeRowMapper employeeRowMapper = new EmployeeRowMapper();
-	// private final RowMapper<Employee> rowMapper = new BeanPropertyRowMapper<>();
-
-	@Override
-	protected RowMapper<Employee> getRowMapper() {
-		return employeeRowMapper;
-	}
 	
+//	private final RowMapper<Employee> employeeRowMapper = new EmployeeRowMapper();
+//	// private final RowMapper<Employee> rowMapper = new BeanPropertyRowMapper<>();
+
+//	@Override
+//	protected RowMapper<Employee> getRowMapper() {
+//		return employeeRowMapper;
+//	}
+//	
+
+	public EmployeeRepositoryImpl() {
+		super(new EmployeeRowMapper());
+	}
+
 
 	/**
 	 * Returns all SQL parameters for the given object
@@ -62,15 +56,16 @@ public class EmployeeRepositoryImpl extends GenericRepository<Employee> implemen
 	}
 
 	/**
-	 * Returns Primary Key SQL parameter(s) for the given values
-	 * @param record
+	 * Returns Primary Key SQL parameter(s) from the given values
+	 * @param id
 	 * @return
 	 */
 	private SqlParameterSource getPKParameters(Long id) {
 		return new MapSqlParameterSource()
 				.addValue("id", id )
 				;
-	}	
+	}
+
 	//------------------------------------------------------------------------------
 
 	@Override
@@ -81,9 +76,7 @@ public class EmployeeRepositoryImpl extends GenericRepository<Employee> implemen
 				+ " last_name  varchar(30),"
 				+ " birth_date date"
 				+ ")";
-		// jdbcTemplate.execute(sql);
-		//namedParameterJdbcTemplate.getJdbcTemplate().execute(sql);
-		getJdbcTemplate().execute(sql);
+		sqlExecute(sql);
 	}
 
 	@Override
@@ -94,8 +87,8 @@ public class EmployeeRepositoryImpl extends GenericRepository<Employee> implemen
 		return sqlCount(sql);
 	}
 
-	@Override
-	public Employee findById(Long id) {
+	//@Override
+	public Employee findByIdNative(Long id) {
 		
 		// SQL request used by jdbcTemplate to create a prepared statement
 		String sql = "SELECT * FROM EMPLOYEE WHERE ID = ?";
@@ -107,18 +100,28 @@ public class EmployeeRepositoryImpl extends GenericRepository<Employee> implemen
 
 		// Execute SQL query, return a list of Employee objects created with "row mapper"
 		// get unique record in the list returned
-		return uniqueOrNull(getJdbcTemplate().query(sql, employeeRowMapper, id));
+		return uniqueOrNull(getJdbcTemplate().query(sql, getRowMapper(), id));
 	}
 
 	@Override
-	public Employee findByIdWithParamMap(Long id) {
+	public Employee findById(Long id) {
 		// SQL request used by jdbcTemplate to create a prepared statement (with named parameter)
 		String sql = "SELECT * FROM EMPLOYEE WHERE ID = :id";
 		
 		// Execute SQL query, return a list of Employee objects created with "row mapper"
 		// get unique record in the list returned
 		//return uniqueOrNull(namedParameterJdbcTemplate.query(sql, getPKParameters(id), employeeRowMapper));
-		return sqlSelectByPK(sql, getPKParameters(id));
+		return sqlSelectOne(sql, getPKParameters(id));
+	}
+
+	public List<Employee> findAll() {
+		// SQL request used by jdbcTemplate to create a prepared statement (with named parameter)
+		String sql = "SELECT * FROM EMPLOYEE ";
+		
+		// Execute SQL query, return a list of Employee objects created with "row mapper"
+		// get unique record in the list returned
+		//return uniqueOrNull(namedParameterJdbcTemplate.query(sql, getPKParameters(id), employeeRowMapper));
+		return sqlSelectList(sql);
 	}
 
 	@Override

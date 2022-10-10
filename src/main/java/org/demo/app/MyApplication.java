@@ -51,7 +51,7 @@ public class MyApplication {
        	System.out.println("employee = " + emp);
 
        	System.out.println("findById(123)...");
-    	emp = employeeRepository.findByIdWithParamMap(5L);
+    	emp = employeeRepository.findById(5L);
        	System.out.println("employee = " + emp);
        	
        	System.out.println("deleteById(1)...");
