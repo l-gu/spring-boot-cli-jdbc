@@ -12,4 +12,5 @@ public interface EmployeeRepository {
 	
 	Employee findByIdWithParamMap(Long id) ;
 	
+	void insert(Employee record) ;
 }
