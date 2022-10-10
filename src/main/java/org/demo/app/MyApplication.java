@@ -43,7 +43,7 @@ public class MyApplication {
     	employeeRepository.insert(emp);
     	
     	System.out.println("SQL count...");
-    	long count = employeeRepository.getCount();
+    	long count = employeeRepository.countAll();
     	System.out.println("count = " + count);
     	
     	System.out.println("findById(1)...");
@@ -58,6 +58,6 @@ public class MyApplication {
        	int r = employeeRepository.deleteById(1L);
        	System.out.println("r = " + r);
        	
-       	System.out.println("count = " + employeeRepository.getCount());
+       	System.out.println("count = " + employeeRepository.countAll());
     } 
 }
