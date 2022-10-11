@@ -63,7 +63,7 @@ public class EmployeeRepositoryImpl extends GenericRepository<Employee> implemen
 	 * @param record
 	 * @return
 	 */
-	private SqlParameterSource getAllParameters(Employee record) {
+	private SqlParameterSource getRecordParameters(Employee record) {
 		return new MapSqlParameterSource()
 				.addValue("id", record.getId() )
 				.addValue("firstName", record.getFirstName() )
@@ -71,7 +71,14 @@ public class EmployeeRepositoryImpl extends GenericRepository<Employee> implemen
 				.addValue("birthDate", record.getBirthDate() )
 				;
 	}
-
+	private SqlParameterSource[] getBatchParameters(List<Employee> records) {
+		SqlParameterSource[] batchParameters = new SqlParameterSource[records.size()];
+		for (int i = 0; i < batchParameters.length; i++) {
+			batchParameters[i] = getRecordParameters(records.get(i));
+		}
+		return batchParameters;
+	}
+	
 	/**
 	 * Returns Primary Key SQL parameter(s) from the given values
 	 * @param id
@@ -136,20 +143,28 @@ public class EmployeeRepositoryImpl extends GenericRepository<Employee> implemen
 	}
 
 	@Override
-	public void insert(Employee record) {
+	public int insert(Employee record) {
 		// SQL request used by jdbcTemplate to create a prepared statement (with named parameter)
 		String sql = "insert into employee  (id, first_name, last_name, birth_date) " 
 				+ " values (:id, :firstName, :lastName, :birthDate)";
-		sqlInsert(sql, getAllParameters(record));
+		return sqlInsert(sql, getRecordParameters(record));
 	}
-
+	
+	public int[] insertBatch(List<Employee> records) {
+		// SQL request used by jdbcTemplate to create a prepared statement (with named parameter)
+		String sql = "insert into employee  (id, first_name, last_name, birth_date) " 
+				+ " values (:id, :firstName, :lastName, :birthDate)";
+		// batch size = list size 
+		return getNamedParameterJdbcTemplate().batchUpdate(sql, getBatchParameters(records));
+	}
+	
 	@Override
 	public int update(Employee record) {
 		// SQL request used by jdbcTemplate to create a prepared statement (with named parameter)
 		String sql = "update employee set " +
 				" firstName = :firstName, lastName = :latsName, birthDate = :birthDate " +
 				" where id = :id " ; 
-		return sqlUpdate(sql, getAllParameters(record));
+		return sqlUpdate(sql, getRecordParameters(record));
 	}
 
 	@Override

@@ -97,8 +97,8 @@ public abstract class GenericRepository<T> {
 		return namedParameterJdbcTemplate.queryForObject(sql, getEmptySqlParameterSource(), Long.class);
 	}
 	
-	protected void sqlInsert(String sql, SqlParameterSource sqlParameterSource) {
-		namedParameterJdbcTemplate.update(sql, sqlParameterSource);
+	protected int sqlInsert(String sql, SqlParameterSource sqlParameterSource) {
+		return namedParameterJdbcTemplate.update(sql, sqlParameterSource);
 	}
 	
 	protected int sqlUpdate(String sql, SqlParameterSource sqlParameterSource) {

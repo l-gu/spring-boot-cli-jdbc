@@ -17,6 +17,14 @@ public class Employee {
 		super();
 	}
 
+	public Employee(Long id, String firstName, String lastName, LocalDate birthDate) {
+		super();
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.birthDate = birthDate;
+	}
+
 	public Long getId() {
 		return id;
 	}

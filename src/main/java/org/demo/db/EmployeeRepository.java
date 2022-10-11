@@ -14,9 +14,11 @@ public interface EmployeeRepository {
 
 	Employee findById(Long id);
 		
-	void insert(Employee record) ;
+	int insert(Employee record) ;
 	
 	int update(Employee record);
+	
+	int[] insertBatch(List<Employee> records);
 
 	int deleteById(Long id);
 }

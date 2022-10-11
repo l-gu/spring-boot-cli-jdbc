@@ -1,6 +1,8 @@
 package org.demo.app;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.demo.db.EmployeeRepository;
 import org.demo.domain.model.Employee;
@@ -30,22 +32,21 @@ public class MyApplication {
     	System.out.println("SQL create table...");
     	employeeRepository.createTable();
     	
-    	Employee emp = new Employee();
-    	emp.setId(1L);
-    	emp.setFirstName("Bob");
-    	emp.setLastName("Sponge");
-    	emp.setBirthDate( LocalDate.of(2020, 7, 14) );    	
-    	employeeRepository.insert(emp);
-    	emp.setId(2L);
-    	emp.setFirstName("John");
-    	emp.setLastName("Wayne");
-    	emp.setBirthDate( LocalDate.of(1936, 8, 27) );    	
-    	employeeRepository.insert(emp);
+    	employeeRepository.insert(new Employee(1L, "Bob", "Sponge", LocalDate.of(2020, 7, 14)));
+    	employeeRepository.insert(new Employee(2L, "John", "Wayne", LocalDate.of(1936, 8, 27)));
+    	
+    	List<Employee> employees = new ArrayList<>();
+    	employees.add(new Employee(10L, "Aaa", "aa", LocalDate.of(2010, 7, 14))) ;
+    	employees.add(new Employee(11L, "Bbb", "bb", LocalDate.of(2011, 7, 14))) ;
+    	employees.add(new Employee(12L, "Ccc", "bb", LocalDate.of(2012, 7, 14))) ;
+    	employees.add(new Employee(13L, "Ddd", "bb", LocalDate.of(2013, 7, 14))) ;
+    	employeeRepository.insertBatch(employees);
     	
     	System.out.println("SQL count...");
     	long count = employeeRepository.countAll();
     	System.out.println("count = " + count);
     	
+    	Employee emp;
     	System.out.println("findById(1)...");
     	emp = employeeRepository.findById(1L);
        	System.out.println("employee = " + emp);
