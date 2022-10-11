@@ -34,7 +34,7 @@ public class EmployeeRepositoryImpl extends GenericRepository<Employee> implemen
 	}
 	
 	// Just to test different RowMapper types  
-	private static final boolean specificRowMapper = false; 
+	private static final boolean specificRowMapper = true; 
 	
 	private static final RowMapper<Employee> buildRowMapper() {
 		if ( specificRowMapper ) {
@@ -109,6 +109,7 @@ public class EmployeeRepositoryImpl extends GenericRepository<Employee> implemen
 		return sqlCount(sql);
 	}
 
+	/***
 	//@Override
 	public Employee findByIdNative(Long id) {
 		
@@ -124,6 +125,7 @@ public class EmployeeRepositoryImpl extends GenericRepository<Employee> implemen
 		// get unique record in the list returned
 		return uniqueOrNull(getJdbcTemplate().query(sql, getRowMapper(), id));
 	}
+	***/
 
 	@Override
 	public Employee findById(Long id) {
