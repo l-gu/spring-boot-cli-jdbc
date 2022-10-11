@@ -182,4 +182,9 @@ public class EmployeeRepositoryImpl extends GenericRepository<Employee> implemen
 		return sqlDelete(sql, getPKParameters(id));
 	}
 
+	@Override
+	public int delete(Employee record) {
+		return deleteById(record.getId());
+	}
+
 }

@@ -23,4 +23,6 @@ public interface EmployeeRepository {
 	int[] updateBatch(List<Employee> records);
 	
 	int deleteById(Long id);
+	
+	int delete(Employee record);
 }
