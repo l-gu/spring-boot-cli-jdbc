@@ -96,6 +96,10 @@ public abstract class GenericRepository<T> {
 	protected long sqlCount(String sql) {
 		return namedParameterJdbcTemplate.queryForObject(sql, getEmptySqlParameterSource(), Long.class);
 	}
+
+	protected long sqlCount(String sql, SqlParameterSource sqlParameterSource) {
+		return namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, Long.class);
+	}
 	
 	protected int sqlInsert(String sql, SqlParameterSource sqlParameterSource) {
 		return namedParameterJdbcTemplate.update(sql, sqlParameterSource);

@@ -44,18 +44,20 @@ public class MyApplication {
     	employeeRepository.insertBatch(employees);
     	
     	System.out.println("countAll() : " + employeeRepository.countAll() );
+    	System.out.println("exists(2) : " + employeeRepository.exists(2L) );
+    	System.out.println("exists(99) : " + employeeRepository.exists(99L) );
 
     	System.out.println("findAll() : ");
     	for ( Employee e : employeeRepository.findAll() ) {
     		System.out.println(" . " + e);
     	}
     	
-    	System.out.println("findById(1) : " + employeeRepository.findById(1L) );
-    	System.out.println("findById(5) : " + employeeRepository.findById(5L) );
+    	System.out.println("findById(1) : " + employeeRepository.find(1L) );
+    	System.out.println("findById(5) : " + employeeRepository.find(5L) );
        	
-       	System.out.println("deleteById(1) : " + employeeRepository.deleteById(1L));
-       	System.out.println("deleteById(5) : " + employeeRepository.deleteById(5L));
-       	System.out.println("deleteById(12) : " + employeeRepository.deleteById(12L));
+       	System.out.println("deleteById(1) : " + employeeRepository.delete(1L));
+       	System.out.println("deleteById(5) : " + employeeRepository.delete(5L));
+       	System.out.println("deleteById(12) : " + employeeRepository.delete(12L));
        	
        	System.out.println("countAll() : " + employeeRepository.countAll());
        	

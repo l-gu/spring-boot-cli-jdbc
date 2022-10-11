@@ -16,6 +16,27 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class EmployeeRepositoryImpl extends GenericRepository<Employee> implements EmployeeRepository {
 
+	// SQL requests used by jdbcTemplate to create a prepared statement (with named parameter)
+	private static final String WHERE_PK = " where id = :id";
+	
+	private static final String SQL_SELECT = "select * from employee ";
+	private static final String SQL_SELECT_WHERE_PK = SQL_SELECT + WHERE_PK ;
+	
+	private static final String SQL_COUNT = "select count(*) from employee ";
+	private static final String SQL_COUNT_WHERE_PK = SQL_COUNT + WHERE_PK ;
+
+	private static final String SQL_INSERT = 
+			"insert into employee  (id, first_name, last_name, birth_date) " +
+			" values (:id, :firstName, :lastName, :birthDate)";
+	
+	private static final String SQL_UPDATE = 
+			"update employee set " +
+			" first_name = :firstName, last_name = :lastName, birth_date = :birthDate " +
+			WHERE_PK ; 
+
+	private static final String SQL_DELETE_WHERE_PK = 
+			"delete from employee " + WHERE_PK;
+		
 	/**
 	 * Specific RowMapper for Employee <br>
 	 * Creates an instance of Employee for each row in the given ResultSet <br>
@@ -93,7 +114,7 @@ public class EmployeeRepositoryImpl extends GenericRepository<Employee> implemen
 	//------------------------------------------------------------------------------
 
 	@Override
-	public void createTable() {
+	public void createTable() { // just for test
 		String sql = "create table employee ("
 				+ " id int ,"
 				+ " first_name varchar(30),"
@@ -105,8 +126,17 @@ public class EmployeeRepositoryImpl extends GenericRepository<Employee> implemen
 
 	@Override
 	public long countAll() {
-		String sql = "select count(1) from EMPLOYEE";
-		return sqlCount(sql);
+		return sqlCount(SQL_COUNT);
+	}
+
+	@Override
+	public boolean exists(Long id) {
+		return sqlCount(SQL_COUNT_WHERE_PK, getPKParameters(id)) > 0 ;
+	}
+
+	@Override
+	public boolean exists(Employee record) {
+		return exists(record.getId()) ;
 	}
 
 	/***
@@ -128,27 +158,19 @@ public class EmployeeRepositoryImpl extends GenericRepository<Employee> implemen
 	***/
 
 	@Override
-	public Employee findById(Long id) {
-		// SQL request used by jdbcTemplate to create a prepared statement (with named parameter)
-		String sql = "SELECT * FROM EMPLOYEE WHERE ID = :id";
+	public Employee find(Long id) {
+//		// SQL request used by jdbcTemplate to create a prepared statement (with named parameter)
+//		String sql = "SELECT * FROM EMPLOYEE WHERE ID = :id";
 		// Execute SQL query and return a single Employee object created with the "RowMapper"
 		// or null if not found
-		return sqlSelectOne(sql, getPKParameters(id));
+		return sqlSelectOne(SQL_SELECT_WHERE_PK, getPKParameters(id));
 	}
 
 	@Override
 	public List<Employee> findAll() {
-		// SQL request used by jdbcTemplate to create a prepared statement (with named parameter if any)
-		String sql = "SELECT * FROM EMPLOYEE ";
-		// Execute SQL query and return a list of Employee objects created with the "RowMapper"
-		return sqlSelectList(sql);
+		return sqlSelectList(SQL_SELECT);
 	}
 
-	// SQL request used by jdbcTemplate to create a prepared statement (with named parameter)
-	private static final String SQL_INSERT = 
-			"insert into employee  (id, first_name, last_name, birth_date) " +
-			" values (:id, :firstName, :lastName, :birthDate)";
-	
 	@Override
 	public int insert(Employee record) {
 		return sqlInsert(SQL_INSERT, getRecordParameters(record));
@@ -159,12 +181,6 @@ public class EmployeeRepositoryImpl extends GenericRepository<Employee> implemen
 		return sqlInsertBatch(SQL_INSERT, getBatchParameters(records));
 	}
 	
-	// SQL request used by jdbcTemplate to create a prepared statement (with named parameter)
-	private static final String SQL_UPDATE = 
-			"update employee set " +
-			" first_name = :firstName, last_name = :lastName, birth_date = :birthDate " +
-			" where id = :id " ; 
-
 	@Override
 	public int update(Employee record) {
 		return sqlUpdate(SQL_UPDATE, getRecordParameters(record));
@@ -176,15 +192,13 @@ public class EmployeeRepositoryImpl extends GenericRepository<Employee> implemen
 	}
 
 	@Override
-	public int deleteById(Long id) {
-		// SQL request used by jdbcTemplate to create a prepared statement (with named parameter)
-		String sql = "delete from employee where id = :id";
-		return sqlDelete(sql, getPKParameters(id));
+	public int delete(Long id) {
+		return sqlDelete(SQL_DELETE_WHERE_PK, getPKParameters(id));
 	}
 
 	@Override
 	public int delete(Employee record) {
-		return deleteById(record.getId());
+		return delete(record.getId());
 	}
 
 }

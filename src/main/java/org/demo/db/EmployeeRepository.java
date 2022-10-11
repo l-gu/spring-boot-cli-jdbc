@@ -6,13 +6,17 @@ import org.demo.domain.model.Employee;
 
 public interface EmployeeRepository {
 	
-	void createTable(); // just fot test 
+	void createTable(); // just for test 
 	
 	long countAll();
 	
+	boolean exists(Long id);
+	
+	boolean exists(Employee record);
+	
 	List<Employee> findAll();
 
-	Employee findById(Long id);
+	Employee find(Long id);
 		
 	int insert(Employee record) ;
 	
@@ -22,7 +26,7 @@ public interface EmployeeRepository {
 	
 	int[] updateBatch(List<Employee> records);
 	
-	int deleteById(Long id);
+	int delete(Long id);
 	
 	int delete(Employee record);
 }
