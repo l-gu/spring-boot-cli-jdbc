@@ -38,27 +38,35 @@ public class MyApplication {
     	List<Employee> employees = new ArrayList<>();
     	employees.add(new Employee(10L, "Aaa", "aa", LocalDate.of(2010, 7, 14))) ;
     	employees.add(new Employee(11L, "Bbb", "bb", LocalDate.of(2011, 7, 14))) ;
-    	employees.add(new Employee(12L, "Ccc", "bb", LocalDate.of(2012, 7, 14))) ;
-    	employees.add(new Employee(13L, "Ddd", "bb", LocalDate.of(2013, 7, 14))) ;
+    	employees.add(new Employee(12L, "Ccc", "cc", LocalDate.of(2012, 7, 14))) ;
+    	employees.add(new Employee(13L, "Ddd", "dd", LocalDate.of(2013, 7, 14))) ;
+    	System.out.println("insertBatch()");
     	employeeRepository.insertBatch(employees);
     	
-    	System.out.println("SQL count...");
-    	long count = employeeRepository.countAll();
-    	System.out.println("count = " + count);
-    	
-    	Employee emp;
-    	System.out.println("findById(1)...");
-    	emp = employeeRepository.findById(1L);
-       	System.out.println("employee = " + emp);
+    	System.out.println("countAll() : " + employeeRepository.countAll() );
 
-       	System.out.println("findById(123)...");
-    	emp = employeeRepository.findById(5L);
-       	System.out.println("employee = " + emp);
+    	System.out.println("findAll() : ");
+    	for ( Employee e : employeeRepository.findAll() ) {
+    		System.out.println(" . " + e);
+    	}
+    	
+    	System.out.println("findById(1) : " + employeeRepository.findById(1L) );
+    	System.out.println("findById(5) : " + employeeRepository.findById(5L) );
        	
-       	System.out.println("deleteById(1)...");
-       	int r = employeeRepository.deleteById(1L);
-       	System.out.println("r = " + r);
+       	System.out.println("deleteById(1) : " + employeeRepository.deleteById(1L));
+       	System.out.println("deleteById(5) : " + employeeRepository.deleteById(5L));
+       	System.out.println("deleteById(12) : " + employeeRepository.deleteById(12L));
        	
-       	System.out.println("count = " + employeeRepository.countAll());
+       	System.out.println("countAll() : " + employeeRepository.countAll());
+       	
+       	for ( Employee e : employees ) {
+       		e.setFirstName(e.getFirstName() + "-foo");
+       	}
+    	System.out.println("updateBatch()");
+    	employeeRepository.updateBatch(employees);
+    	System.out.println("findAll() : ");
+    	for ( Employee e : employeeRepository.findAll() ) {
+    		System.out.println(" . " + e);
+    	}
     } 
 }

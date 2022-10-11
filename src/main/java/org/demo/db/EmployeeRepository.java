@@ -6,7 +6,7 @@ import org.demo.domain.model.Employee;
 
 public interface EmployeeRepository {
 	
-	void createTable();
+	void createTable(); // just fot test 
 	
 	long countAll();
 	
@@ -16,9 +16,11 @@ public interface EmployeeRepository {
 		
 	int insert(Employee record) ;
 	
-	int update(Employee record);
-	
 	int[] insertBatch(List<Employee> records);
 
+	int update(Employee record);
+	
+	int[] updateBatch(List<Employee> records);
+	
 	int deleteById(Long id);
 }

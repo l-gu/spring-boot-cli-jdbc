@@ -142,29 +142,35 @@ public class EmployeeRepositoryImpl extends GenericRepository<Employee> implemen
 		return sqlSelectList(sql);
 	}
 
+	// SQL request used by jdbcTemplate to create a prepared statement (with named parameter)
+	private static final String SQL_INSERT = 
+			"insert into employee  (id, first_name, last_name, birth_date) " +
+			" values (:id, :firstName, :lastName, :birthDate)";
+	
 	@Override
 	public int insert(Employee record) {
-		// SQL request used by jdbcTemplate to create a prepared statement (with named parameter)
-		String sql = "insert into employee  (id, first_name, last_name, birth_date) " 
-				+ " values (:id, :firstName, :lastName, :birthDate)";
-		return sqlInsert(sql, getRecordParameters(record));
-	}
-	
-	public int[] insertBatch(List<Employee> records) {
-		// SQL request used by jdbcTemplate to create a prepared statement (with named parameter)
-		String sql = "insert into employee  (id, first_name, last_name, birth_date) " 
-				+ " values (:id, :firstName, :lastName, :birthDate)";
-		// batch size = list size 
-		return getNamedParameterJdbcTemplate().batchUpdate(sql, getBatchParameters(records));
+		return sqlInsert(SQL_INSERT, getRecordParameters(record));
 	}
 	
 	@Override
+	public int[] insertBatch(List<Employee> records) {
+		return sqlInsertBatch(SQL_INSERT, getBatchParameters(records));
+	}
+	
+	// SQL request used by jdbcTemplate to create a prepared statement (with named parameter)
+	private static final String SQL_UPDATE = 
+			"update employee set " +
+			" first_name = :firstName, last_name = :lastName, birth_date = :birthDate " +
+			" where id = :id " ; 
+
+	@Override
 	public int update(Employee record) {
-		// SQL request used by jdbcTemplate to create a prepared statement (with named parameter)
-		String sql = "update employee set " +
-				" firstName = :firstName, lastName = :latsName, birthDate = :birthDate " +
-				" where id = :id " ; 
-		return sqlUpdate(sql, getRecordParameters(record));
+		return sqlUpdate(SQL_UPDATE, getRecordParameters(record));
+	}
+
+	@Override
+	public int[] updateBatch(List<Employee> records) {
+		return sqlInsertBatch(SQL_UPDATE, getBatchParameters(records));
 	}
 
 	@Override

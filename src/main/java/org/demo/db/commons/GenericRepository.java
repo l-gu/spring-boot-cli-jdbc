@@ -101,8 +101,16 @@ public abstract class GenericRepository<T> {
 		return namedParameterJdbcTemplate.update(sql, sqlParameterSource);
 	}
 	
+	protected int[] sqlInsertBatch(String sql, SqlParameterSource[] sqlParameterSources) {
+		return namedParameterJdbcTemplate.batchUpdate(sql, sqlParameterSources);		
+	}
+	
 	protected int sqlUpdate(String sql, SqlParameterSource sqlParameterSource) {
 		return namedParameterJdbcTemplate.update(sql, sqlParameterSource);
+	}
+
+	protected int[] sqlUpdateBatch(String sql, SqlParameterSource[] sqlParameterSources) {
+		return namedParameterJdbcTemplate.batchUpdate(sql, sqlParameterSources);		
 	}
 	
 	protected int sqlDelete(String sql, SqlParameterSource sqlParameterSource) {
