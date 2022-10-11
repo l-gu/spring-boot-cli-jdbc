@@ -7,6 +7,7 @@ import java.util.List;
 import org.demo.db.EmployeeRepository;
 import org.demo.db.commons.GenericRepository;
 import org.demo.domain.model.Employee;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -15,6 +16,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class EmployeeRepositoryImpl extends GenericRepository<Employee> implements EmployeeRepository {
 
+	/**
+	 * Specific RowMapper for Employee <br>
+	 * Creates an instance of Employee for each row in the given ResultSet <br>
+	 * and map column values to attributes.
+	 */
 	private static final class EmployeeRowMapper implements RowMapper<Employee> {
 		@Override
 		public Employee mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -27,19 +33,30 @@ public class EmployeeRepositoryImpl extends GenericRepository<Employee> implemen
 		}
 	}
 	
-//	private final RowMapper<Employee> employeeRowMapper = new EmployeeRowMapper();
-//	// private final RowMapper<Employee> rowMapper = new BeanPropertyRowMapper<>();
-
-//	@Override
-//	protected RowMapper<Employee> getRowMapper() {
-//		return employeeRowMapper;
-//	}
-//	
-
-	public EmployeeRepositoryImpl() {
-		super(new EmployeeRowMapper());
+	// Just to test different RowMapper types  
+	private static final boolean specificRowMapper = false; 
+	
+	private static final RowMapper<Employee> buildRowMapper() {
+		if ( specificRowMapper ) {
+			// Specific RowMapper 
+			return new EmployeeRowMapper() ;
+		}
+		else {
+			// Generic RowMapper 
+			// Column values are mapped based on matching the column name as obtained from result set
+			// meta-data to public setters for the corresponding properties. The names are matched either
+			// directly or by transforming a name separating the parts with underscores to the same name
+			// using "camel case".
+			return new BeanPropertyRowMapper<Employee>(Employee.class);
+		}
 	}
-
+	
+	/**
+	 * Constructor
+	 */
+	public EmployeeRepositoryImpl() {
+		super(buildRowMapper());
+	}
 
 	/**
 	 * Returns all SQL parameters for the given object
@@ -82,8 +99,6 @@ public class EmployeeRepositoryImpl extends GenericRepository<Employee> implemen
 	@Override
 	public long countAll() {
 		String sql = "select count(1) from EMPLOYEE";
-		//return namedParameterJdbcTemplate.getJdbcTemplate().queryForObject(sql, Long.class);
-		//return namedParameterJdbcTemplate.queryForObject(sql, getEmptySqlParameterSource(), Long.class);
 		return sqlCount(sql);
 	}
 
@@ -107,21 +122,16 @@ public class EmployeeRepositoryImpl extends GenericRepository<Employee> implemen
 	public Employee findById(Long id) {
 		// SQL request used by jdbcTemplate to create a prepared statement (with named parameter)
 		String sql = "SELECT * FROM EMPLOYEE WHERE ID = :id";
-		
-		// Execute SQL query, return a list of Employee objects created with "row mapper"
-		// get unique record in the list returned
-		//return uniqueOrNull(namedParameterJdbcTemplate.query(sql, getPKParameters(id), employeeRowMapper));
+		// Execute SQL query and return a single Employee object created with the "RowMapper"
+		// or null if not found
 		return sqlSelectOne(sql, getPKParameters(id));
 	}
 
 	@Override
 	public List<Employee> findAll() {
-		// SQL request used by jdbcTemplate to create a prepared statement (with named parameter)
+		// SQL request used by jdbcTemplate to create a prepared statement (with named parameter if any)
 		String sql = "SELECT * FROM EMPLOYEE ";
-		
-		// Execute SQL query, return a list of Employee objects created with "row mapper"
-		// get unique record in the list returned
-		//return uniqueOrNull(namedParameterJdbcTemplate.query(sql, getPKParameters(id), employeeRowMapper));
+		// Execute SQL query and return a list of Employee objects created with the "RowMapper"
 		return sqlSelectList(sql);
 	}
 
@@ -130,7 +140,6 @@ public class EmployeeRepositoryImpl extends GenericRepository<Employee> implemen
 		// SQL request used by jdbcTemplate to create a prepared statement (with named parameter)
 		String sql = "insert into employee  (id, first_name, last_name, birth_date) " 
 				+ " values (:id, :firstName, :lastName, :birthDate)";
-		//namedParameterJdbcTemplate.update(sql, getAllParameters(record));
 		sqlInsert(sql, getAllParameters(record));
 	}
 
@@ -140,14 +149,13 @@ public class EmployeeRepositoryImpl extends GenericRepository<Employee> implemen
 		String sql = "update employee set " +
 				" firstName = :firstName, lastName = :latsName, birthDate = :birthDate " +
 				" where id = :id " ; 
-		//return namedParameterJdbcTemplate.update(sql, getAllParameters(record));
 		return sqlUpdate(sql, getAllParameters(record));
 	}
-	
+
 	@Override
 	public int deleteById(Long id) {
+		// SQL request used by jdbcTemplate to create a prepared statement (with named parameter)
 		String sql = "delete from employee where id = :id";
-		//return namedParameterJdbcTemplate.update(sql, getPKParameters(id));
 		return sqlDelete(sql, getPKParameters(id));
 	}
 

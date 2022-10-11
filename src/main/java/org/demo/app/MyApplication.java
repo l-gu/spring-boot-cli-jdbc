@@ -33,12 +33,12 @@ public class MyApplication {
     	Employee emp = new Employee();
     	emp.setId(1L);
     	emp.setFirstName("Bob");
-    	emp.setFirstName("Sponge");
+    	emp.setLastName("Sponge");
     	emp.setBirthDate( LocalDate.of(2020, 7, 14) );    	
     	employeeRepository.insert(emp);
     	emp.setId(2L);
     	emp.setFirstName("John");
-    	emp.setFirstName("Wayne");
+    	emp.setLastName("Wayne");
     	emp.setBirthDate( LocalDate.of(1936, 8, 27) );    	
     	employeeRepository.insert(emp);
     	
