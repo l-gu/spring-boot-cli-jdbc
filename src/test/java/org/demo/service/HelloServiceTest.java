@@ -5,22 +5,24 @@ import static org.mockito.Mockito.when;
 
 import org.demo.services.GreetingService;
 import org.demo.services.HelloService;
+import org.demo.services.impl.HelloServiceImpl;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-// if the Spring Boot starter class is not in a higher package level 
-// => specify the class (cannot be found)
-// @SpringBootTest(classes = SpringBootStarter.class) 
 class HelloServiceTest {
 
 	@Mock
-	private GreetingService greetingServiceMock; 
+	private GreetingService greetingServiceMock;  // used by HelloServiceImpl
 
     @Autowired
-    HelloService helloService;
+	HelloService helloService;
+	
+    @InjectMocks
+    HelloService helloServiceMock = new HelloServiceImpl(); // concrete class required for mock
 
 	@Test
 	void testWithBob() {
@@ -36,8 +38,10 @@ class HelloServiceTest {
 
 	@Test
 	void testWithMock() {
-		when(greetingServiceMock.getGreetingWord("ZZ")).thenReturn("Zzzzzz");
-		// TODO
+		// Change behavior with mock
+		when(greetingServiceMock.getGreetingWord("EN")).thenReturn("Hi");
+		String result = helloServiceMock.hello("Bob");
+		assertEquals("Hi Bob !", result);
 	}
 
 }
