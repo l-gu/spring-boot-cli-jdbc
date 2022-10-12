@@ -29,6 +29,14 @@
 			<artifactId>h2</artifactId> <!--  Version in Spring  -->
 		</dependency>
 
+		<!-- TEST dependencies -->
+       <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>		
+		</dependency>
+		<!-- junit-jupiter is a transitive dependency -->
+
 	</dependencies>
 
 </project>

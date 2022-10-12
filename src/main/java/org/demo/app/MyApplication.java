@@ -8,12 +8,16 @@ import org.demo.db.EmployeeRepository;
 import org.demo.domain.model.Employee;
 import org.demo.services.BonjourService;
 import org.demo.services.HelloService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MyApplication {
 
+	private static final Logger log = LoggerFactory.getLogger(MyApplication.class);
+	
 	@Autowired
 	private HelloService helloService ;
 	
@@ -24,10 +28,11 @@ public class MyApplication {
 	private EmployeeRepository employeeRepository ;
 	
     public void run(String[] args) {
-    	System.out.println("Hello world!");
+    	log.info("Starting application : args.length = {}", args.length);    	
     	System.out.println("args.length = " + args.length);
+
     	helloService.hello("Bob");
-    	bonjourService.bonjour("John");
+    	log.info("Call 'bonjour' service : {}", bonjourService.bonjour("John"));    	
     	
     	System.out.println("SQL create table...");
     	employeeRepository.createTable();

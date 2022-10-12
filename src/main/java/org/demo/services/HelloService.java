@@ -1,11 +1,6 @@
 package org.demo.services;
 
-import org.springframework.stereotype.Component;
+public interface HelloService {
 
-@Component
-public class HelloService {
-
-	public void hello(String name) {
-		System.out.println("Hello " + name + " !");
-	}
+	public String hello(String name); 
 }
