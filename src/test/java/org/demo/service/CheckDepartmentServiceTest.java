@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
@@ -28,11 +29,15 @@ class CheckDepartmentServiceTest {
 		// return null by default
     }	
 
-//   @Autowired
-//	 CheckDepartmentService checkDepartmentService;
-    @InjectMocks  // inject the mock in the instance (concrete class required)
-    CheckDepartmentService checkDepartmentService = new CheckDepartmentServiceImpl(); 
+	//--- Inject "DepartmentRepository" MOCK in "CheckDepartmentService" class
+// Cannot use an interface because Mockito needs to know what subclass to instantiate
+//    @Autowired
+//    CheckDepartmentService checkDepartmentService ; 
 
+    @InjectMocks  
+    // Mockito needs to know what subclass to instantiate => new concrete class required
+    CheckDepartmentService checkDepartmentService = new CheckDepartmentServiceImpl(); 
+    
 	@Test
 	void testValidDepartment() {
 //		when(departmentRepository.find(123)).thenReturn(new Department(123, "Dep A"));
