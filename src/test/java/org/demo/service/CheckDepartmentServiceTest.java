@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
@@ -50,7 +49,7 @@ class CheckDepartmentServiceTest {
 	void testInvalidDep() {
 //		when(departmentRepository.find(999)).thenReturn(null) ;
 
-		IllegalStateException e = Assertions.assertThrows(IllegalStateException.class, () -> {
+		Assertions.assertThrows(IllegalStateException.class, () -> {
 	        // Code under test
 			checkDepartmentService.checkDepartmentExistence(999);
 	    });		
