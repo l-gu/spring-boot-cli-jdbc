@@ -7,3 +7,5 @@ Using "spring-boot-starter-jdbc" dependency providing :
 - spring-jdbc-x.x.x.jar
 - spring-tx-x.x.x.jar 
 
+Unit tests examples with JUnit 5, "spring-boot-starter-test" and H2 database
+

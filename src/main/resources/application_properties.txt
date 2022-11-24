@@ -1,5 +1,6 @@
 # application.properties
 
+spring.application.name=cli-jdbc-demo
 # Datasource configuration for MySQL 
 # spring.datasource.url = jdbc:mysql://mydb:3306/my_database
 # spring.datasource.driver-class-name = com.mysql.jdbc.Driver
@@ -7,7 +8,8 @@
 # spring.datasource.password = root
 
 # Datasource configuration for H2 
-spring.datasource.url=jdbc:h2:mem:testdb
+## spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.url=jdbc:h2:mem:mydb
 spring.datasource.driverClassName=org.h2.Driver
 spring.datasource.username=sa
 spring.datasource.password=password

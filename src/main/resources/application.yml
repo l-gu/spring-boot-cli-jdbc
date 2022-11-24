@@ -1,0 +1,12 @@
+# application.yml
+
+spring:
+
+  application:
+    name: Spring Boot CLI JDBC demo
+    
+  datasource:
+    url: jdbc:h2:mem:mydb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password

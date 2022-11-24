@@ -19,6 +19,9 @@ public class MyApplication {
 	private static final Logger log = LoggerFactory.getLogger(MyApplication.class);
 	
 	@Autowired
+	ApplicationConfig applicationConfig;
+	
+	@Autowired
 	private HelloService helloService ;
 	
 	@Autowired
@@ -30,10 +33,23 @@ public class MyApplication {
     public void run(String[] args) {
     	log.info("Starting application : args.length = {}", args.length);    	
     	System.out.println("args.length = " + args.length);
-
-    	helloService.hello("Bob");
-    	log.info("Call 'bonjour' service : {}", bonjourService.bonjour("John"));    	
     	
+    	applicationConfig.printProperties();
+
+    	useHelloService();
+    	useBonjourService();
+    	useEmployeeRepository();
+    } 
+    
+    private void useHelloService() {
+    	log.info("Call 'hello' service : {}", helloService.hello("Bob"));
+    }
+    
+    private void useBonjourService() {
+    	log.info("Call 'bonjour' service : {}", bonjourService.bonjour("John"));
+    }
+    
+    private void useEmployeeRepository() {
     	System.out.println("SQL create table...");
     	employeeRepository.createTable();
     	
@@ -75,5 +91,5 @@ public class MyApplication {
     	for ( Employee e : employeeRepository.findAll() ) {
     		System.out.println(" . " + e);
     	}
-    } 
+    }
 }

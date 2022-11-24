@@ -1,0 +1,6 @@
+# application.properties
+
+## spring.application.name=cli-jdbc-demo-test
+
+# Override application configuration 
+spring.datasource.url=jdbc:h2:mem:testdb

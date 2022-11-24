@@ -1,0 +1,12 @@
+# application.yml for TESTS
+
+spring:
+
+  application:
+    name: Testing
+    
+  datasource:
+    url: jdbc:h2:mem:testdb;INIT=RUNSCRIPT FROM 'classpath:initdb.sql'
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
